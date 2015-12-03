@@ -97,6 +97,7 @@ int main()
 
   double   x;                   // Throughput
   double   xc;                   // Throughput clientes
+  double   fc;                   // Clientes perdidos %
   double   uc;                  // Utilizacion cliente
   double   ub;                  // Utilizacion buffer
   double   l;                   // Media de paquetes en sistema
@@ -109,6 +110,7 @@ int main()
 
   unsigned int packets_sent = 0;
   unsigned int clients_attended = 0;
+  unsigned int clients_lost = 0;
 
   vector<int> frames;
 
@@ -236,6 +238,7 @@ int main()
       next_client_arr += Ta;                 // se aumenta por el promedio de llegadas 
     } else if(newClient && clients.size()>=K) {
       next_client_arr += Ta;                 // se aumenta por el promedio de llegadas 
+      clients_lost++;
     }
 
     s = s + buffer.size() * (time - last_time);  // actualiza area bajo curva de s
@@ -262,6 +265,7 @@ int main()
   // Procesa Resultados
   x = packets_sent / time;   // Procesa throughput
   xc = clients_attended / time;   // Procesa throughput
+  fc = clients_lost/(double)(clients_lost+clients_attended);   // Procesa throughput
   ub = bb / time;   // Procesa utilizacion del concentrador
   uc = bc / time;   // Procesa utilizacion del concentrador
   l = s / time;   // Computa numero promedio de paquetes en sistema
@@ -287,6 +291,7 @@ int main()
   printf("=    Tiempo promedio de estancia de paquetes en sistema = %.2f s  \n", w);
   printf("=                                                                           = \n");
   printf("=    Numero de clientes atendidos                       = %d clientes         \n", clients_attended);
+  printf("=    Porcentaje de clientes perdidos                    = %.2f %%         \n",100.0 * fc);
   printf("=    Throughput de la cola de clientes                  = %.2f clientes/s          \n", xc);
   printf("=    Utilizacion de la cola de clientes                 = %.2f %%             \n",100.0 * uc);
   printf("=    Numero promedio de clientes en sistema             = %.2f clientes            \n", lc);
